@@ -32,8 +32,12 @@ def check(email):
     """
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     answer = True
-    if not re.fullmatch(regex, email):
-        print("Invalid Email")
+    try:
+        if not re.fullmatch(regex, email):
+            print("Invalid Email")
+            answer = False
+    except TypeError:
+        print("You must enter the email in correct way. Check the argparse help using -h")
         answer = False
     return answer
 
@@ -41,10 +45,14 @@ def send_email(subject, body, sender, recipient, password):
     """
         This is created to send the message.
     """
-    msg = MIMEText(' '.join(body))
-    msg['Subject'] = ' '.join(subject)
-    msg['From'] = sender
-    msg['To'] = recipient
+    try:
+        msg = MIMEText(' '.join(body))
+        msg['Subject'] = ' '.join(subject)
+        msg['From'] = sender
+        msg['To'] = recipient
+    except TypeError:
+        print("You must enter the message in correct way. Check the argparse help using -h")
+        sys.exit()
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
         try:
             smtp_server.login(sender, password)
